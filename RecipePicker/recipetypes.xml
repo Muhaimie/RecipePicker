@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<recipetype>
+    <recipe><name>Main Dishes</name></recipe>
+    <recipe><name>Soups,Salad</name></recipe>
+    <recipe><name>Desert</name></recipe>
+    <recipe><name>Appetizers,Beverages</name></recipe>
+    <recipe><name>Miscellaneous</name></recipe>
+</recipetype>
