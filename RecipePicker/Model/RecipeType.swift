@@ -10,6 +10,11 @@ import Foundation
 
 struct RecipeType{
     var name : String
+    var recipe : [Recipe] = []
+    
+    init(name : String) {
+        self.name = name
+    }
 }
 
 class RecipeParser : NSObject{
@@ -66,9 +71,9 @@ extension RecipeParser : XMLParserDelegate{
     }
     
     
-    public static func parserCall()->[String]{
+    public static func parserCall()->[RecipeType]{
         
-        var recipes = [String]()
+        var recipes : [RecipeType] = []
         
         do{
             if let xmlUrl = Bundle.main.url(forResource: "recipetypes", withExtension: "xml"){
@@ -77,7 +82,7 @@ extension RecipeParser : XMLParserDelegate{
                 let recipesType = gameParser.parse()
                 
                 for recipe in recipesType{
-                    recipes.append(recipe.name)
+                    recipes.append(recipe)
                 }
             }else{
                 

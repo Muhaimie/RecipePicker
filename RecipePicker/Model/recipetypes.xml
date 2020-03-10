@@ -2,8 +2,8 @@
 
 <recipetype>
     <recipe><name>Main Dishes</name></recipe>
-    <recipe><name>Soups,Salad</name></recipe>
+    <recipe><name>Soups and Salad</name></recipe>
     <recipe><name>Desert</name></recipe>
-    <recipe><name>Appetizers,Beverages</name></recipe>
+    <recipe><name>Appetizers</name></recipe>
     <recipe><name>Miscellaneous</name></recipe>
 </recipetype>
