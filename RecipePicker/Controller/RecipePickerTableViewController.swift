@@ -10,6 +10,7 @@ import UIKit
 
 class RecipePickerTableViewController: UITableViewController,UISearchBarDelegate{
     
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +21,7 @@ class RecipePickerTableViewController: UITableViewController,UISearchBarDelegate
         
         
         // later delete
-        let recipe = Recipe(title: "aa", images: nil, ingredients: nil, steps: nil)
+        let recipe = Recipe(title: "aa", images: [], ingredients: ["ada","eds"], steps: ["ada","eds"])
         recipeType[0].recipe.append(recipe)
         
 
@@ -41,6 +42,7 @@ class RecipePickerTableViewController: UITableViewController,UISearchBarDelegate
         navigationController?.navigationBar.prefersLargeTitles = true
         let searchController = UISearchController(searchResultsController: nil)
         navigationItem.searchController = searchController
+        
         
     }
 
@@ -82,12 +84,13 @@ class RecipePickerTableViewController: UITableViewController,UISearchBarDelegate
         let vc = storyboard?.instantiateViewController(identifier: "DetailTVC") as? AddRecipeTableViewController
         vc?.inEditing = true
         vc?.recipeToEdit = recipeType[indexPath.section].recipe[indexPath.row]
+        vc?.recipeType = recipeType
         vc?.sectionInModel = indexPath.section
         vc?.indexInModel = indexPath.row
+        vc?.delegate = self
         
+        self.navigationController?.pushViewController(vc!, animated:  true)
         
-        self.navigationController?.pushViewController(vc!, animated: true)
-        print(indexPath.row)
     }
     
     
@@ -114,19 +117,54 @@ class RecipePickerTableViewController: UITableViewController,UISearchBarDelegate
 
 //MARK: AddRecipeDelegate
 extension RecipePickerTableViewController:AddRecipeDelegate{
-    
-    func addRecipe(newRecipe recipe: Recipe) {
-
-        for i in 0 ..< self.recipeType.count{
-            if self.recipeType[i].name == recipe.recipteType!{
-                self.recipeType[i].recipe.append(recipe)
-                
-            }
-        }
+ 
+  
+    func addRecipe(newRecipe recipe: Recipe, isEditing: Bool, section: Int?, row: Int?) {
         
-        tableView.reloadData()
-        //print(recipeType)
+        
+        switch isEditing {
+        case false:
+            
+            for i in 0 ..< self.recipeType.count{
+                if self.recipeType[i].name == recipe.recipteType!{
+                    self.recipeType[i].recipe.append(recipe)
+                    
+                }
+            }
+            
+            tableView.reloadData()
+            
+            
+        case true:
+            
+            guard section != nil,row != nil else{
+                return
+            }
+            
+            self.recipeType[section!].recipe[row!] = recipe
+            tableView.reloadData()
+        }
     }
     
+    
+    
+    
+    
+}
+
+
+// MARK: UINAVIGATION CONTROLLER
+//extension UINavigationController{
+//
+//    open func customPushController(_ inViewControllers:[UIViewController], animated : Bool){
+//        var stack = self.viewControllers
+//        stack.append(contentsOf: inViewControllers)
+//        self.setViewControllers(stack, animated: true)
+//    }
+//}
+
+
+//MARK:
+extension RecipePickerTableViewController{
     
 }

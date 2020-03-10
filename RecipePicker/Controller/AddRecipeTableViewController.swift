@@ -10,7 +10,7 @@ import UIKit
 
 protocol AddRecipeDelegate {
     
-    func addRecipe(newRecipe recipe : Recipe)
+    func addRecipe(newRecipe recipe : Recipe, isEditing : Bool,section : Int? , row : Int?)
 }
 
 
@@ -24,7 +24,7 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
     
     
     //for editingPage
-    var inEditing = false
+    var inEditing : Bool?
     var indexInModel: Int?
     var sectionInModel : Int?
     var recipeToEdit : Recipe?
@@ -32,6 +32,10 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if inEditing == nil{
+            inEditing = false
+        }
 
         // Do any additional setup after loading the view.
         title = "New Recipe"
@@ -42,38 +46,60 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         
         if inEditing == true{
             
+           title = "Edit Recipe"
+            
+            name = recipeToEdit!.title
+            ingredients = recipeToEdit!.ingredients!
+            steps = recipeToEdit!.steps!
+            images = recipeToEdit!.images!
+            
+//            doneAddBarButton.action = nil
+//            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "aaaa", style: .done, target: self, action: #selector(barClicked))
+//
+            
         }
+            
+            
+        
 
     }
+    
+    
+//   @objc func barClicked(){
+//
+//        performSegue(withIdentifier: "unwindToPicker", sender: self)
+//    }
     
     // MARK: Model
     var recipe : Recipe?
     
     //placeholder for the recipe before put into model
     var name : String?
-    var images = [UIImage]() // edit later
+    var images = [UIImage]()
     var ingredients = [String]()
     var steps = [String]()
     
     
     
     
-    
+
     
     
     let imagePicker = UIImagePickerController()
     
     // in collection view 
     @IBAction func addImageButtonClicked(_ sender: Any) {
+        
+        print("dsd")
         imagePicker.allowsEditing = true
         imagePicker.sourceType = .photoLibrary
         
         present(imagePicker, animated: true, completion: nil)
         
+        
     }
     
-    
-    
+
     
     
     
@@ -100,7 +126,7 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return images.count + 1
+        return (images.count) + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -152,9 +178,9 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         else if section == 2{
             return 1
         } else if section == 3{
-            return ingredients.count + 1
+            return (ingredients.count ) + 1
         }else{
-            return steps.count + 1
+            return (steps.count) + 1
         }
         
     }
@@ -202,7 +228,6 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         if indexPath.section == 0{
             
             let imageCell = tableView.dequeueReusableCell(withIdentifier: "imageCell",for: indexPath) as UITableViewCell
-            
 
             return imageCell
         }
@@ -210,6 +235,7 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         else if indexPath.section == 1{
             let nameCell = tableView.dequeueReusableCell(withIdentifier: "NameCell",for: indexPath) as! NameTableViewCell
             nameCell.textFieldDelegate(dataSourceDelegate: self, forRow: indexPath.row)
+            nameCell.nameTextField.text = name
             return nameCell
         }
         else if indexPath.section == 2{
@@ -223,6 +249,7 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
             }else{
                 let ingredientCell = tableView.dequeueReusableCell(withIdentifier: "ingredientItem", for: indexPath) as! IngredientsTableViewCell
                 ingredientCell.textFieldDelegate(dataSourceDelegate: self, forRow: indexPath.row)
+                ingredientCell.IngredientTextField.text = ingredients[indexPath.row - 1]
 
                 return ingredientCell
             }
@@ -237,6 +264,7 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
             }else{
                 let stepCell = tableView.dequeueReusableCell(withIdentifier: "stepItem", for: indexPath) as! CookingStepTableViewCell
                 stepCell.textFieldDelegate(dataSourceDelegate: self, forRow: indexPath.row)
+                stepCell.stepTextField.text = steps[indexPath.row - 1]
                 stepCell.stepCountLabel.text = "Step \(indexPath.row): "
                 
                 return stepCell
@@ -321,17 +349,17 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
             destination.delegate = self
         }
         
-        
-        //for unwind segue but use delegate instead
-        if let _ = segue.destination as? RecipePickerTableViewController{
-            
+        if segue.identifier == "unwindToPicker"{
             let recipeType = tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? RecipeTypeTableViewCell
             
             
-            recipe = Recipe(title:  name ?? "", images: images, ingredients: ingredients, steps: steps, recipteType: recipeType?.textLabel?.text)
-            delegate?.addRecipe(newRecipe: recipe!)
-
+            recipe = Recipe(title:  name ?? "" , images: images, ingredients: ingredients, steps: steps, recipteType: recipeType?.textLabel?.text)
+            
+            
+            delegate?.addRecipe(newRecipe: recipe!,isEditing: inEditing!,section: sectionInModel,row : indexInModel)
+            
         }
+
         
 
 
@@ -368,7 +396,6 @@ extension AddRecipeTableViewController: PhotoCellDelegate{
             
             //delete (probably better than reloadData()) 
             tvc?.collectionView.deleteItems(at: [indexPath])
-            print(images)
         
         }
     }
@@ -402,7 +429,7 @@ extension AddRecipeTableViewController: UITextFieldDelegate{
         
         switch indexPath?.section {
         case 1:
-            self.name = textField.text
+            self.name = textField.text!
         case 3:
             self.ingredients[indexPath!.row - 1] = textField.text ?? ""
 

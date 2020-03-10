@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CB3E4158241751E50049BE95 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB3E4157241751E50049BE95 /* ImageCollectionViewCell.swift */; };
+		CB3E415A2417A7E00049BE95 /* AddImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB3E41592417A7E00049BE95 /* AddImageCollectionViewCell.swift */; };
 		CB8C3840241694BC00796897 /* IngredientsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C383F241694BC00796897 /* IngredientsTableViewCell.swift */; };
 		CB8C3842241694C900796897 /* NameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C3841241694C900796897 /* NameTableViewCell.swift */; };
 		CB8C38442417463E00796897 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8C38432417463E00796897 /* ImageTableViewCell.swift */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		CB3E4157241751E50049BE95 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageCollectionViewCell.swift; path = RecipePicker/Controller/ImageCollectionViewCell.swift; sourceTree = SOURCE_ROOT; };
+		CB3E41592417A7E00049BE95 /* AddImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		CB8C383F241694BC00796897 /* IngredientsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientsTableViewCell.swift; sourceTree = "<group>"; };
 		CB8C3841241694C900796897 /* NameTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTableViewCell.swift; sourceTree = "<group>"; };
 		CB8C38432417463E00796897 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				CB3E4157241751E50049BE95 /* ImageCollectionViewCell.swift */,
+				CB3E41592417A7E00049BE95 /* AddImageCollectionViewCell.swift */,
 				CBAA343724166B2100475C6A /* RecipeTypeTableViewCell.swift */,
 				CBAA34342416629100475C6A /* CookingStepTableViewCell.swift */,
 				CB8C383F241694BC00796897 /* IngredientsTableViewCell.swift */,
@@ -206,6 +209,7 @@
 			files = (
 				CB8C3840241694BC00796897 /* IngredientsTableViewCell.swift in Sources */,
 				CBAA342B2416315C00475C6A /* AddRecipeTableViewController.swift in Sources */,
+				CB3E415A2417A7E00049BE95 /* AddImageCollectionViewCell.swift in Sources */,
 				CB3E4158241751E50049BE95 /* ImageCollectionViewCell.swift in Sources */,
 				CBAA340E2416041E00475C6A /* AppDelegate.swift in Sources */,
 				CBAA34102416041E00475C6A /* SceneDelegate.swift in Sources */,
