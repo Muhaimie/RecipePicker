@@ -11,7 +11,7 @@
         <scene sceneID="zJx-yT-THd">
             <objects>
                 <tableViewController storyboardIdentifier="RecipePickerViewController" id="eBa-Ck-RQN" customClass="RecipePickerTableViewController" customModule="RecipePicker" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="xCe-RK-bk4">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="xCe-RK-bk4">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -119,6 +119,7 @@
                                                         </constraints>
                                                     </collectionViewCellContentView>
                                                     <connections>
+                                                        <outlet property="deleteButton" destination="Wod-Uh-gvb" id="4s2-pG-wxk"/>
                                                         <outlet property="imageView" destination="K1e-pj-bAb" id="Nge-F2-hBV"/>
                                                     </connections>
                                                 </collectionViewCell>

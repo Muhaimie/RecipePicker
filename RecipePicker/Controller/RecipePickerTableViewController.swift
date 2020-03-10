@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RecipePickerTableViewController: UITableViewController,UISearchBarDelegate{
+class RecipePickerTableViewController: UITableViewController{
     
     
 
@@ -21,7 +21,7 @@ class RecipePickerTableViewController: UITableViewController,UISearchBarDelegate
         
         
         // later delete
-        let recipe = Recipe(title: "aa", images: [], ingredients: ["ada","eds"], steps: ["ada","eds"])
+        let recipe = Recipe(title: "aa", images: [], ingredients: ["ada","eds"], steps: ["ada","eds"],recipteType: recipeType[0].name)
         recipeType[0].recipe.append(recipe)
         
 
@@ -41,60 +41,175 @@ class RecipePickerTableViewController: UITableViewController,UISearchBarDelegate
     func setupNavBar(){
         navigationController?.navigationBar.prefersLargeTitles = true
         let searchController = UISearchController(searchResultsController: nil)
+
+        
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search recipe..."
+        searchController.searchBar.sizeToFit()
+        searchController.searchBar.searchBarStyle = .default
+        
         navigationItem.searchController = searchController
         
+        searchController.searchBar.delegate = self
+        searchController.delegate = self
         
     }
+    
+    //for the searchBar filtering
+    var searchedResult  = [[Recipe]]()
+    var searching = false
 
+
+    
+ 
+    
     
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
+        
+        
+        if searching == false{
         return recipeType.count
+        }else{
+            
+            return searchedResult.count
+            
+        }
+        
     }
 
     
-    
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return recipeType[section].name
+        
+        if searching == false
+            
+        {
+            switch section {
+            case 0:
+                return recipeType[0].recipe.count != 0 ? recipeType[0].name : nil
+            case 1:
+                return recipeType[1].recipe.count != 0  ? recipeType[1].name : nil
+            case 2:
+                return recipeType[2].recipe.count != 0  ? recipeType[2].name : nil
+            case 3:
+                return recipeType[3].recipe.count != 0  ? recipeType[3].name : nil
+            case 4:
+                return recipeType[4].recipe.count != 0  ? recipeType[4].name : nil
+            default:
+                return nil
+            }
+            
+            
+            
+        }
+        else{
+            
+            switch section {
+            case 0:
+                return searchedResult[0].count != 0 ? recipeType[0].name : nil
+            case 1:
+                return searchedResult[1].count != 0 ? recipeType[1].name : nil
+            case 2:
+                return searchedResult[2].count != 0 ? recipeType[2].name : nil
+            case 3:
+                return searchedResult[3].count != 0 ? recipeType[3].name : nil
+            case 4:
+                return searchedResult[4].count != 0 ? recipeType[4].name : nil
+            default:
+                return nil
+            }
+        }
     }
     
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return recipeType[section].recipe.count 
+        
+        if searching == false{
+            return recipeType[section].recipe.count
+        }else{
+            
+            switch section {
+            case 0:
+                return searchedResult[0].count
+            case 1 :
+                return searchedResult[1].count
+            case 2:
+                return searchedResult[2].count
+            case 3:
+                return searchedResult[3].count
+            case 4:
+                return searchedResult[4].count
+            default:
+                return 0
+            }
+            
+        }
     }
     
    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-        cell.textLabel?.text = recipeType[indexPath.section].recipe[indexPath.row].title
-
-        return cell
+        
+        if searching == false{
+            // Configure the cell...
+            cell.textLabel?.text = recipeType[indexPath.section].recipe[indexPath.row].title
+            
+            return cell
+        }else{
+            cell.textLabel?.text = searchedResult[indexPath.section][indexPath.row].title
+            return cell
+        }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-    
-        
+
         let vc = storyboard?.instantiateViewController(identifier: "DetailTVC") as? AddRecipeTableViewController
-        vc?.inEditing = true
-        vc?.recipeToEdit = recipeType[indexPath.section].recipe[indexPath.row]
+        vc?.inDetailShowing = true
         vc?.recipeType = recipeType
-        vc?.sectionInModel = indexPath.section
-        vc?.indexInModel = indexPath.row
+        
+        
+        if searching == false{
+
+            vc?.recipeToEdit = recipeType[indexPath.section].recipe[indexPath.row]
+            vc?.sectionInModel = indexPath.section
+            vc?.indexInModel = indexPath.row
+            
+        }else{
+            
+            let recipeIndex = recipeType[indexPath.section].recipe.indices.filter{
+                
+                return recipeType[indexPath.section].recipe[$0] == searchedResult[indexPath.section][indexPath.row]
+                
+            }.first
+            vc?.recipeToEdit = recipeType[indexPath.section].recipe[recipeIndex!]
+            vc?.sectionInModel = indexPath.section
+            vc?.indexInModel = recipeIndex
+            
+            }
+        
         vc?.delegate = self
+
+        //recipeType[indexPath.section].recipe.remove(at: indexPath.row)
+
+        self.navigationItem.searchController?.dismiss(animated: false, completion: {
+            self.navigationItem.searchController?.searchBar.text = ""
+            self.navigationItem.searchController?.searchBar.resignFirstResponder()
+            self.searching = false
+            self.navigationController?.pushViewController(vc!, animated:  true)
+        })
+
         
-        self.navigationController?.pushViewController(vc!, animated:  true)
         
-    }
-    
-    
+
+        }
   
+    
+    
 
     
    // MARK: Segue
@@ -117,13 +232,24 @@ class RecipePickerTableViewController: UITableViewController,UISearchBarDelegate
 
 //MARK: AddRecipeDelegate
 extension RecipePickerTableViewController:AddRecipeDelegate{
- 
+    
+    
+    
   
-    func addRecipe(newRecipe recipe: Recipe, isEditing: Bool, section: Int?, row: Int?) {
+    func addRecipe(newRecipe recipe: Recipe, section: Int?, row: Int?, inEditing editing: Bool) {
         
+        //this prevent from the controller to show in searching mode in picker tvc
+        if self.navigationItem.searchController?.isActive == true{
+            print("dammit")
+        }
         
-        switch isEditing {
-        case false:
+
+        if editing == true{
+            
+            //delete the data first and readding
+            recipeType[section!].recipe.remove(at: row!)
+            
+        }
             
             for i in 0 ..< self.recipeType.count{
                 if self.recipeType[i].name == recipe.recipteType!{
@@ -135,15 +261,7 @@ extension RecipePickerTableViewController:AddRecipeDelegate{
             tableView.reloadData()
             
             
-        case true:
-            
-            guard section != nil,row != nil else{
-                return
-            }
-            
-            self.recipeType[section!].recipe[row!] = recipe
-            tableView.reloadData()
-        }
+        
     }
     
     
@@ -164,7 +282,48 @@ extension RecipePickerTableViewController:AddRecipeDelegate{
 //}
 
 
-//MARK:
-extension RecipePickerTableViewController{
+//MARK: UISearchBarDelegate
+extension RecipePickerTableViewController:UISearchBarDelegate{
+    
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        
+        
+        searchedResult.removeAll()
+        
+        searching = true
+            
+            
+            for recipetype in  recipeType{
+                let result = recipetype.recipe.filter{$0.title.prefix(searchText.count).lowercased() == searchText.lowercased()}
+                searchedResult.append(result)
+            }
+       
+
+        
+         tableView.reloadData()
+        
+        
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searching = false
+        tableView.reloadData()
+        
+        
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        self.resignFirstResponder()
+    }
+    
     
 }
+extension RecipePickerTableViewController:UISearchControllerDelegate{
+    
+
+}
+
+
+

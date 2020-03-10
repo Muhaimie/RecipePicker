@@ -20,6 +20,9 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     
+    @IBOutlet weak var deleteButton: UIButton!
+    
+    
     @IBAction func deleteButtonDidTapped(_ sender : Any){
         
         delegete?.delete(cell: self)

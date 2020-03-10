@@ -10,14 +10,14 @@ import UIKit
 
 protocol AddRecipeDelegate {
     
-    func addRecipe(newRecipe recipe : Recipe, isEditing : Bool,section : Int? , row : Int?)
+    func addRecipe(newRecipe recipe : Recipe,section : Int? , row : Int?,inEditing editing : Bool)
 }
 
 
 class AddRecipeTableViewController: UITableViewController,UICollectionViewDelegate,UICollectionViewDataSource,UIImagePickerControllerDelegate,UINavigationControllerDelegate{
     
    //segue parser model from last vc
-    var recipeType : [RecipeType]?
+    var recipeType =  [RecipeType]()
     
     
     var delegate : AddRecipeDelegate?
@@ -28,10 +28,18 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
     var indexInModel: Int?
     var sectionInModel : Int?
     var recipeToEdit : Recipe?
+    
+    
+    //for only showing details (neither edit nor add)
+    var inDetailShowing : Bool?
        
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if inDetailShowing == nil{
+            inDetailShowing = false
+        }
         
         if inEditing == nil{
             inEditing = false
@@ -44,7 +52,7 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         imagePicker.delegate = self
         
         
-        if inEditing == true{
+        if inEditing == true || inDetailShowing == true{
             
            title = "Edit Recipe"
             
@@ -52,23 +60,43 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
             ingredients = recipeToEdit!.ingredients!
             steps = recipeToEdit!.steps!
             images = recipeToEdit!.images!
-            
-//            doneAddBarButton.action = nil
-//            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "aaaa", style: .done, target: self, action: #selector(barClicked))
-//
+            recipe_Type = recipeToEdit!.recipteType
+        
             
         }
-            
-            
+        
+        
+
+        
+        
+        
+        //make barbutton become edit button in showing detail mode
+        
+        if inDetailShowing == true{
+            self.navigationItem.rightBarButtonItem?.action = nil
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editBarClicked))
+        }
         
 
     }
     
     
-//   @objc func barClicked(){
-//
-//        performSegue(withIdentifier: "unwindToPicker", sender: self)
-//    }
+   @objc func editBarClicked(){
+        inDetailShowing = false
+        inEditing = true
+        tableView.reloadData()
+        
+        //make barbutton back to normal
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(unwindsegueback))
+    }
+    
+    
+    //selector to perform segue back after editing
+    @objc func unwindsegueback(){
+        //perform segue
+        performSegue(withIdentifier: "unwindToPicker", sender: self)
+    }
+    
     
     // MARK: Model
     var recipe : Recipe?
@@ -78,11 +106,13 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
     var images = [UIImage]()
     var ingredients = [String]()
     var steps = [String]()
+    lazy var recipe_Type : String? = {
+        recipeType.first?.name
+    }()
     
     
     
     
-
     
     
     let imagePicker = UIImagePickerController()
@@ -126,30 +156,47 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return (images.count) + 1
+        if inDetailShowing == true {
+            return images.count
+        }else{
+            return (images.count) + 1
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if indexPath.item == 0{
-            
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addImageCell", for: indexPath)
-              cell.layer.borderWidth = 1
-              cell.layer.borderColor  = UIColor.black.cgColor
-
-            return cell
-            
-        }else{
+        if inDetailShowing == true{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ImageCollectionViewCell
               cell.layer.borderWidth = 1
               cell.layer.borderColor  = UIColor.black.cgColor
+            cell.deleteButton.isHidden = true
                 
-            cell.imageView.image = images[(images.count) - indexPath.row]
+            cell.imageView.image = images[(images.count - 1) - indexPath.row]
             
 
               return cell
+        }else{
+            
+            if indexPath.item == 0{
+                
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addImageCell", for: indexPath)
+                cell.layer.borderWidth = 1
+                cell.layer.borderColor  = UIColor.black.cgColor
+                
+                return cell
+                
+            }else{
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ImageCollectionViewCell
+                cell.layer.borderWidth = 1
+                cell.layer.borderColor  = UIColor.black.cgColor
+                
+                cell.imageView.image = images[(images.count) - indexPath.row]
+                
+                cell.deleteButton.isHidden = false
+                
+                return cell
+            }
         }
-        
         
     }
     
@@ -178,9 +225,9 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         else if section == 2{
             return 1
         } else if section == 3{
-            return (ingredients.count ) + 1
+            return inDetailShowing! ? ingredients.count :  (ingredients.count ) + 1
         }else{
-            return (steps.count) + 1
+            return inDetailShowing! ? steps.count : (steps.count) + 1
         }
         
     }
@@ -227,7 +274,15 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         
         if indexPath.section == 0{
             
-            let imageCell = tableView.dequeueReusableCell(withIdentifier: "imageCell",for: indexPath) as UITableViewCell
+            let imageCell = tableView.dequeueReusableCell(withIdentifier: "imageCell",for: indexPath) as! ImageTableViewCell
+            
+            if inDetailShowing == true{
+                imageCell.isUserInteractionEnabled = false
+            }else{
+                imageCell.isUserInteractionEnabled = true
+            }
+            
+            imageCell.collectionView.reloadData()
 
             return imageCell
         }
@@ -236,38 +291,90 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
             let nameCell = tableView.dequeueReusableCell(withIdentifier: "NameCell",for: indexPath) as! NameTableViewCell
             nameCell.textFieldDelegate(dataSourceDelegate: self, forRow: indexPath.row)
             nameCell.nameTextField.text = name
+            
+            if inDetailShowing == true{
+                nameCell.isUserInteractionEnabled = false
+            }else{
+                nameCell.isUserInteractionEnabled = true
+
+            }
+            
             return nameCell
         }
         else if indexPath.section == 2{
             let recipeTypeCell = tableView.dequeueReusableCell(withIdentifier: "recipeTypeCell",for: indexPath)
+            recipeTypeCell.textLabel?.text = recipe_Type
+            
+            if inDetailShowing == true{
+                recipeTypeCell.isUserInteractionEnabled = false
+                recipeTypeCell.accessoryType = .none
+                
+            }else{
+                recipeTypeCell.isUserInteractionEnabled = true
+                recipeTypeCell.accessoryType = .disclosureIndicator
+            }
+            
             return recipeTypeCell
         }
         if indexPath.section == 3{
-            if indexPath.row == 0{
-                let ingredientCell = tableView.dequeueReusableCell(withIdentifier: "addIngredientCell",for: indexPath)
-                return ingredientCell
-            }else{
+            
+            if inDetailShowing == true{
+                
                 let ingredientCell = tableView.dequeueReusableCell(withIdentifier: "ingredientItem", for: indexPath) as! IngredientsTableViewCell
                 ingredientCell.textFieldDelegate(dataSourceDelegate: self, forRow: indexPath.row)
-                ingredientCell.IngredientTextField.text = ingredients[indexPath.row - 1]
+                ingredientCell.IngredientTextField.text = ingredients[indexPath.row]
 
+                ingredientCell.isUserInteractionEnabled = false
+
+                
                 return ingredientCell
-            }
+            }else{
+                
+                if indexPath.row == 0{
+                    let ingredientCell = tableView.dequeueReusableCell(withIdentifier: "addIngredientCell",for: indexPath)
+                    return ingredientCell
+                }else{
+                    let ingredientCell = tableView.dequeueReusableCell(withIdentifier: "ingredientItem", for: indexPath) as! IngredientsTableViewCell
+                    ingredientCell.textFieldDelegate(dataSourceDelegate: self, forRow: indexPath.row)
+                    ingredientCell.IngredientTextField.text = ingredients[indexPath.row - 1]
+                    
+                    ingredientCell.isUserInteractionEnabled = true
 
-            
+                    
+                    return ingredientCell
+                }
+                
+            }
         }
             
         else if indexPath.section == 4{
-            if indexPath.row == 0{
-                let stepCell = tableView.dequeueReusableCell(withIdentifier: "addStepCell", for: indexPath)
-                return stepCell
-            }else{
+            
+            if inDetailShowing == true{
+                
                 let stepCell = tableView.dequeueReusableCell(withIdentifier: "stepItem", for: indexPath) as! CookingStepTableViewCell
                 stepCell.textFieldDelegate(dataSourceDelegate: self, forRow: indexPath.row)
-                stepCell.stepTextField.text = steps[indexPath.row - 1]
-                stepCell.stepCountLabel.text = "Step \(indexPath.row): "
+                stepCell.stepTextField.text = steps[indexPath.row]
+                stepCell.stepCountLabel.text = "Step \(indexPath.row + 1): "
                 
+                stepCell.isUserInteractionEnabled = false
                 return stepCell
+                
+            }else{
+                
+                if indexPath.row == 0{
+                    let stepCell = tableView.dequeueReusableCell(withIdentifier: "addStepCell", for: indexPath)
+                    return stepCell
+                }else{
+                    let stepCell = tableView.dequeueReusableCell(withIdentifier: "stepItem", for: indexPath) as! CookingStepTableViewCell
+                    stepCell.textFieldDelegate(dataSourceDelegate: self, forRow: indexPath.row)
+                    stepCell.stepTextField.text = steps[indexPath.row - 1]
+                    stepCell.stepCountLabel.text = "Step \(indexPath.row): "
+                    
+                    stepCell.isUserInteractionEnabled = true
+
+                    
+                    return stepCell
+                }
             }
         }
         
@@ -343,6 +450,9 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
     //MARK: Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        self.resignFirstResponder()
+        
         if segue.identifier == "recipeTypeDetail"{
             let destination = segue.destination as! RecipeTypeTableViewController
             destination.recipeType = self.recipeType
@@ -350,13 +460,12 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         }
         
         if segue.identifier == "unwindToPicker"{
-            let recipeType = tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? RecipeTypeTableViewCell
             
             
-            recipe = Recipe(title:  name ?? "" , images: images, ingredients: ingredients, steps: steps, recipteType: recipeType?.textLabel?.text)
+            recipe = Recipe(title:  name ?? "" , images: images, ingredients: ingredients, steps: steps, recipteType:recipe_Type)
             
             
-            delegate?.addRecipe(newRecipe: recipe!,isEditing: inEditing!,section: sectionInModel,row : indexInModel)
+            delegate?.addRecipe(newRecipe: recipe!,section: sectionInModel,row : indexInModel, inEditing: inEditing!)
             
         }
 
@@ -378,6 +487,7 @@ extension AddRecipeTableViewController: RecipeTypeTVCDelegate{
     func updateType(recipeType type: String) {
         self.tableView.cellForRow(at: IndexPath(row: 0, section: 2))?.textLabel?.text = type
         self.tableView.cellForRow(at: IndexPath(row: 0, section: 2))?.isSelected = false
+        self.recipe_Type = type
     }
     
 }

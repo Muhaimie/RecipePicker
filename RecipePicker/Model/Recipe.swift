@@ -17,3 +17,22 @@ struct Recipe{
     var recipteType : String?
     
 }
+
+extension Recipe: Hashable{
+    
+    static func == (lhs: Recipe, rhs: Recipe) -> Bool {
+        return lhs.title == rhs.title && lhs.images == rhs.images &&  lhs.ingredients == rhs.ingredients &&  lhs.steps == rhs.steps
+    }
+
+    func hash(into hasher: inout Hasher) {
+
+
+        hasher.combine(title)
+        hasher.combine(images)
+        hasher.combine(ingredients)
+        hasher.combine(steps)
+        
+
+    }
+
+}
