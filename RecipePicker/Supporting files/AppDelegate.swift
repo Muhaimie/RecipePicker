@@ -7,15 +7,27 @@
 //
 
 import UIKit
+import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    
 
-
+    //MARK: Application Lifecycle
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         return true
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        NotificationCenter.default.post(name: NSNotification.Name("SAVE_DATA"), object: nil)
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        NotificationCenter.default.post(name: NSNotification.Name("SAVE_DATA"), object: nil)
+
     }
 
     // MARK: UISceneSession Lifecycle

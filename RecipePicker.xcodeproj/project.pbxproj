@@ -25,6 +25,7 @@
 		CBAA34352416629100475C6A /* CookingStepTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBAA34342416629100475C6A /* CookingStepTableViewCell.swift */; };
 		CBAA343824166B2100475C6A /* RecipeTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBAA343724166B2100475C6A /* RecipeTypeTableViewCell.swift */; };
 		CBAA343A24166D6000475C6A /* RecipeTypeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBAA343924166D6000475C6A /* RecipeTypeTableViewController.swift */; };
+		CBFBAAD92418332100A7ABC0 /* SaveModelHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFBAAD82418332100A7ABC0 /* SaveModelHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,7 +40,6 @@
 		CBAA34142416041E00475C6A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CBAA34162416042000475C6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CBAA34192416042000475C6A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		CBAA341B2416042000475C6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CBAA3421241604DE00475C6A /* recipetypes.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = recipetypes.xml; sourceTree = "<group>"; };
 		CBAA34242416063500475C6A /* RecipeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeType.swift; sourceTree = "<group>"; };
 		CBAA342624160BD500475C6A /* RecipePickerTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipePickerTableViewController.swift; sourceTree = "<group>"; };
@@ -48,6 +48,7 @@
 		CBAA34342416629100475C6A /* CookingStepTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookingStepTableViewCell.swift; sourceTree = "<group>"; };
 		CBAA343724166B2100475C6A /* RecipeTypeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeTypeTableViewCell.swift; sourceTree = "<group>"; };
 		CBAA343924166D6000475C6A /* RecipeTypeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeTypeTableViewController.swift; sourceTree = "<group>"; };
+		CBFBAAD82418332100A7ABC0 /* SaveModelHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SaveModelHelper.swift; path = RecipePicker/Controller/SaveModelHelper.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,7 +86,6 @@
 				CBAA34132416041E00475C6A /* Main.storyboard */,
 				CBAA34362416694800475C6A /* View */,
 				CBAA342C2416397D00475C6A /* Model */,
-				CBAA341B2416042000475C6A /* Info.plist */,
 			);
 			path = RecipePicker;
 			sourceTree = "<group>";
@@ -104,6 +104,7 @@
 		CBAA342C2416397D00475C6A /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				CBFBAAD82418332100A7ABC0 /* SaveModelHelper.swift */,
 				CBAA3421241604DE00475C6A /* recipetypes.xml */,
 				CBAA34242416063500475C6A /* RecipeType.swift */,
 				CBAA34282416230900475C6A /* Recipe.swift */,
@@ -217,6 +218,7 @@
 				CB8C3842241694C900796897 /* NameTableViewCell.swift in Sources */,
 				CBAA342724160BD500475C6A /* RecipePickerTableViewController.swift in Sources */,
 				CBAA34252416063500475C6A /* RecipeType.swift in Sources */,
+				CBFBAAD92418332100A7ABC0 /* SaveModelHelper.swift in Sources */,
 				CBAA343824166B2100475C6A /* RecipeTypeTableViewCell.swift in Sources */,
 				CB8C38442417463E00796897 /* ImageTableViewCell.swift in Sources */,
 				CBAA34352416629100475C6A /* CookingStepTableViewCell.swift in Sources */,
@@ -365,6 +367,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PRDM6A6K9V;
 				INFOPLIST_FILE = RecipePicker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -373,7 +376,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = muhaimie.com.RecipePicker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -382,6 +385,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PRDM6A6K9V;
 				INFOPLIST_FILE = RecipePicker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -390,7 +394,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = muhaimie.com.RecipePicker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

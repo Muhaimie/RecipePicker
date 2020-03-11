@@ -10,23 +10,42 @@ import UIKit
 
 class RecipePickerTableViewController: UITableViewController{
     
+  
+    
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //notification for save data (can check AppDelegate)
+        setupNotification()
+        
         setupNavBar()
         
         recipeType = RecipeParser.parserCall()
         
+        putIntoModel()
         
-        // later delete
-        let recipe = Recipe(title: "aa", images: [], ingredients: ["ada","eds"], steps: ["ada","eds"],recipteType: recipeType[0].name)
-        recipeType[0].recipe.append(recipe)
         
-
+        
+        
+        
     }
     
+    //MARK: Notification setup methods
+    func setupNotification(){
+        NotificationCenter.default.addObserver(self, selector: #selector(saveUserDefault), name: NSNotification.Name("SAVE_DATA"), object: nil)
+    }
+    
+    @objc func saveUserDefault(){
+        
+        for i in 0..<recipeType.count{
+            print(SaveModelHelper.save(data: [i : recipeType[i].recipe]))
+
+        }
+        
+        
+    }
     
     
     // MARK: Model config
@@ -35,6 +54,24 @@ class RecipePickerTableViewController: UITableViewController{
     var recipeType = [RecipeType]()
     
     
+    // put into model
+    func putIntoModel(){
+        
+        
+        let modelLoad = SaveModelHelper.load(numberOf: recipeType.count)
+    
+        print(modelLoad.count)
+        for i in 0 ..< modelLoad.count{
+            
+            let valueArray = modelLoad[i].values.first
+            if valueArray != nil{
+                recipeType[i].recipe += valueArray!
+            }
+            
+          
+        }
+
+    }
   
     
     //navigation bar setup
@@ -196,15 +233,8 @@ class RecipePickerTableViewController: UITableViewController{
 
         //recipeType[indexPath.section].recipe.remove(at: indexPath.row)
 
-        self.navigationItem.searchController?.dismiss(animated: false, completion: {
-            self.navigationItem.searchController?.searchBar.text = ""
-            self.navigationItem.searchController?.searchBar.resignFirstResponder()
-            self.searching = false
             self.navigationController?.pushViewController(vc!, animated:  true)
-        })
 
-        
-        
 
         }
   
@@ -218,6 +248,8 @@ class RecipePickerTableViewController: UITableViewController{
             let detailTableVC = segue.destination as! AddRecipeTableViewController
             detailTableVC.recipeType  = self.recipeType
             detailTableVC.delegate = self
+            
+            
         }
     }
     
@@ -239,9 +271,11 @@ extension RecipePickerTableViewController:AddRecipeDelegate{
     func addRecipe(newRecipe recipe: Recipe, section: Int?, row: Int?, inEditing editing: Bool) {
         
         //this prevent from the controller to show in searching mode in picker tvc
-        if self.navigationItem.searchController?.isActive == true{
-            print("dammit")
-        }
+            
+            self.navigationItem.searchController?.searchBar.text = ""
+        self.navigationItem.searchController?.searchBar.endEditing(true)
+        self.searching = false
+        
         
 
         if editing == true{
@@ -315,7 +349,7 @@ extension RecipePickerTableViewController:UISearchBarDelegate{
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        self.resignFirstResponder()
+        searchBar.resignFirstResponder()
     }
     
     

@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-struct Recipe{
+struct Recipe :Codable{
     var title: String
-    var images : [UIImage]?
+    var images : [Data]?
     var ingredients : [String]?
     var steps : [String]?
     var recipteType : String?

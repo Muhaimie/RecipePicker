@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct RecipeType{
+struct RecipeType:Codable{
     var name : String
     var recipe : [Recipe] = []
     

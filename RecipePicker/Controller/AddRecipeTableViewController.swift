@@ -59,7 +59,10 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
             name = recipeToEdit!.title
             ingredients = recipeToEdit!.ingredients!
             steps = recipeToEdit!.steps!
-            images = recipeToEdit!.images!
+            
+            
+            images = (recipeToEdit?.images?.map{UIImage(data: $0)!})!
+            
             recipe_Type = recipeToEdit!.recipteType
         
             
@@ -461,8 +464,10 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         
         if segue.identifier == "unwindToPicker"{
             
+            let imageData = images.map{ $0.jpegData(compressionQuality: 0.6)! }
+            print(imageData)
             
-            recipe = Recipe(title:  name ?? "" , images: images, ingredients: ingredients, steps: steps, recipteType:recipe_Type)
+            recipe = Recipe(title:  name ?? "" , images: imageData, ingredients: ingredients, steps: steps, recipteType:recipe_Type)
             
             
             delegate?.addRecipe(newRecipe: recipe!,section: sectionInModel,row : indexInModel, inEditing: inEditing!)
