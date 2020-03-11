@@ -44,6 +44,8 @@ class RecipePickerTableViewController: UITableViewController{
 
         }
         
+        print("saved")
+        
         
     }
     
@@ -237,8 +239,16 @@ class RecipePickerTableViewController: UITableViewController{
 
 
         }
-  
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+            recipeType[indexPath.section].recipe.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .bottom)
+        
+            saveUserDefault()
+       
+    }
+  
     
 
     
@@ -294,6 +304,7 @@ extension RecipePickerTableViewController:AddRecipeDelegate{
             
             tableView.reloadData()
             
+            saveUserDefault()
             
         
     }

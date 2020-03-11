@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        NotificationCenter.default.post(name: NSNotification.Name("SAVE_DATA"), object: nil)
+        //NotificationCenter.default.post(name: NSNotification.Name("SAVE_DATA"), object: nil)
 
     }
 

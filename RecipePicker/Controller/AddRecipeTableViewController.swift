@@ -447,6 +447,24 @@ class AddRecipeTableViewController: UITableViewController,UICollectionViewDelega
         }
     }
     
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        switch indexPath.section {
+        case 3:
+            if indexPath.row != 0{
+                return .delete
+            }else{
+                return .none
+            }
+        case 4:
+            if indexPath.row != 0{
+                return .delete
+            }else{
+                return .none
+            }
+        default:
+            return .none
+        }
+    }
     
     
     
